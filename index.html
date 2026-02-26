@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Сен чортсың 😈</title>
+    <title>Сен чортсың</title>
     <style>
         * {
             margin: 0;
@@ -114,14 +114,14 @@
 </head>
 <body>
     <div class="card">
-        <!-- Здесь фото или видео -->
+        <!-- Контейнер для фото/видео -->
         <div class="media-container">
             <img id="mediaElement" src="https://ruslankulmuradov3-art.github.io/photo_2026-02-26_18-42-23.jpg" alt="фото">
         </div>
 
-        <!-- ✍️ СЮДА НАПИШИ СВОЙ ТЕКСТ (вместо моего) -->
+        <!-- ✍️ ЗДЕСЬ НАПИШИ СВОЙ ТЕКСТ -->
         <div class="question-text" id="question">
-            Сен чортсың ба?
+           Сен чортсың ба?
         </div>
 
         <!-- Кнопки -->
@@ -130,7 +130,7 @@
             <button class="btn btn-no" id="noBtn">Жоқ</button>
         </div>
 
-        <!-- Сюда появится сообщение -->
+        <!-- Сообщение после нажатия -->
         <div class="hidden-message" id="message"></div>
     </div>
 
@@ -141,14 +141,13 @@
         const yesBtn = document.getElementById('yesBtn');
         const noBtn = document.getElementById('noBtn');
         const messageDiv = document.getElementById('message');
-        const questionDiv = document.getElementById('question');
 
-        // Твоё видео (уже загружено на GitHub)
+        // Твоё видео
         const videoURL = 'https://ruslankulmuradov3-art.github.io/11.mp4';
 
-        // Функция для замены фото на видео
+        // Функция замены фото на видео
         function replaceWithVideo() {
-            // Если уже видео — не заменяем повторно
+            // Если уже видео — не заменяем
             if (mediaElement.tagName === 'VIDEO') return;
 
             // Создаём видео элемент
@@ -173,12 +172,12 @@
         // Нажатие на Жоқ
         noBtn.addEventListener('click', () => {
             replaceWithVideo();
-            messageDiv.innerText = 'Сен чортсың хе-хе 😈';
+            messageDiv.innerText = 'Сен чортсың хе-хе ';
         });
 
         // Нажатие на Иә
         yesBtn.addEventListener('click', () => {
-            messageDiv.innerText = 'Жарайсың! 👍';
+            messageDiv.innerText = 'Сен чортсың хе-хе ';
         });
     </script>
 </body>
