@@ -3,489 +3,726 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>НУАР: Кто украл настрой?</title>
+    <title>⚡ Крестики-нолики: ИИ + подсказки</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none;
         }
 
         body {
             min-height: 100vh;
-            background: #0a0a0a;
-            font-family: 'Courier New', monospace;
+            background: radial-gradient(circle at 30% 30%, #0a0f1e, #03050a);
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 16px;
-            position: relative;
-            overflow-x: hidden;
         }
 
-        /* Эффект старой плёнки */
-        .film-grain {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: repeating-linear-gradient(0deg, rgba(255,255,255,0.02) 0px, rgba(0,0,0,0.02) 2px, transparent 4px);
-            pointer-events: none;
-            z-index: 2;
-            opacity: 0.3;
-            animation: grain 8s steps(10) infinite;
-        }
-
-        @keyframes grain {
-            0%, 100% { transform: translate(0, 0); }
-            10% { transform: translate(-2%, -2%); }
-            20% { transform: translate(2%, 2%); }
-            30% { transform: translate(-2%, 2%); }
-            40% { transform: translate(2%, -2%); }
-            50% { transform: translate(-1%, 1%); }
-            60% { transform: translate(1%, -1%); }
-            70% { transform: translate(-1%, -1%); }
-            80% { transform: translate(1%, 1%); }
-            90% { transform: translate(0, 1%); }
-        }
-
-        /* Царапины на плёнке */
-        .scratch {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .game-container {
+            max-width: 500px;
             width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M10 10 L 90 90 M 20 20 L 80 80 M 30 30 L 70 70 M 40 40 L 60 60 M 50 50 L 50 50 M 60 40 L 40 60 M 70 30 L 30 70 M 80 20 L 20 80 M 90 10 L 10 90" stroke="white" stroke-width="0.3" opacity="0.1" fill="none"/></svg>');
-            pointer-events: none;
-            z-index: 3;
-            opacity: 0.15;
-            mix-blend-mode: overlay;
-        }
-
-        .card {
-            position: relative;
-            z-index: 10;
-            max-width: 480px;
-            width: 100%;
-            background: rgba(10, 10, 10, 0.7);
-            backdrop-filter: blur(8px);
-            border: 2px solid #444;
-            border-radius: 24px;
+            background: rgba(12, 20, 30, 0.7);
+            backdrop-filter: blur(15px);
+            border: 2px solid #2c3f5c;
+            border-radius: 48px;
             padding: 24px 20px 30px;
-            box-shadow: 0 30px 50px rgba(0,0,0,0.8), 0 0 0 2px #8b7355 inset;
+            box-shadow: 0 30px 45px rgba(0,0,0,0.8), 0 0 20px #3f6a9c;
             text-align: center;
-            color: #e0d6c0;
+            color: #e5f0ff;
         }
 
         h1 {
-            font-size: 2.2rem;
+            font-size: 2.8rem;
             font-weight: 800;
+            letter-spacing: 5px;
+            margin-bottom: 0;
             text-transform: uppercase;
-            letter-spacing: 6px;
-            margin-bottom: 8px;
-            color: #b8a07c;
-            text-shadow: 0 0 10px #8b7355, 0 4px 0 #2a2a2a;
-            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #b3d9ff, #7aaae0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px #3f8eff;
         }
 
-        .subtitle {
+        .sub {
             font-size: 1rem;
-            letter-spacing: 2px;
-            margin-bottom: 30px;
-            color: #a89070;
-            border-bottom: 1px dashed #5e4f3e;
-            padding-bottom: 10px;
+            color: #8ba9cc;
+            margin-bottom: 15px;
+            border-bottom: 1px dashed #2f4a6b;
+            padding-bottom: 8px;
         }
 
-        .case-file {
-            background: rgba(0,0,0,0.5);
-            border-left: 4px solid #8b4f3e;
-            padding: 15px;
-            text-align: left;
-            margin-bottom: 25px;
-            font-size: 1.1rem;
-            border-radius: 0 12px 12px 0;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            animation: fadeIn 1s;
-        }
-
-        .case-file p {
-            margin: 5px 0;
-            color: #c0b09a;
-        }
-
-        .case-file .highlight {
-            color: #d7b08c;
-            font-weight: bold;
-        }
-
-        .suspects-title {
-            font-size: 1.5rem;
-            margin: 20px 0 15px;
-            text-transform: uppercase;
-            border-bottom: 2px solid #5e4f3e;
-            padding-bottom: 5px;
-            letter-spacing: 3px;
-        }
-
-        .suspect-grid {
+        /* Статистика */
+        .stats {
             display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-            margin: 20px 0;
-        }
-
-        .suspect {
-            flex: 1 1 120px;
-            background: #1e1e1e;
-            border: 2px solid #3e3e3e;
-            border-radius: 20px;
-            padding: 20px 10px 15px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 0 #0a0a0a;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .suspect:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 0 #0a0a0a, 0 0 30px #8b7355;
-            border-color: #b89a7a;
-        }
-
-        .suspect:active {
-            transform: translateY(5px);
-            box-shadow: 0 5px 0 #0a0a0a;
-        }
-
-        .suspect-icon {
-            font-size: 4rem;
-            margin-bottom: 10px;
-            filter: grayscale(80%);
-            transition: all 0.3s;
-        }
-
-        .suspect:hover .suspect-icon {
-            filter: grayscale(0%);
-            transform: scale(1.1);
-        }
-
-        .suspect-name {
-            font-size: 1.4rem;
+            justify-content: space-around;
+            background: #0f1a24;
+            border-radius: 60px;
+            padding: 12px 10px;
+            margin-bottom: 20px;
+            border: 2px solid #2e4b70;
             font-weight: bold;
-            color: #c0b09a;
-        }
-
-        .suspect-role {
-            font-size: 0.8rem;
-            color: #7e6e5a;
-            text-transform: uppercase;
-        }
-
-        .evidence-box {
-            margin: 25px 0 20px;
-            min-height: 80px;
-            background: #0f0f0f;
-            border: 2px solid #4a3f33;
-            border-radius: 16px;
-            padding: 16px;
-            font-style: italic;
-            color: #d4c4ac;
             font-size: 1.2rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-value {
+            background: #1e3140;
+            padding: 5px 14px;
+            border-radius: 30px;
+            color: #d2e6ff;
+            border: 1px solid #3e6a99;
+            min-width: 45px;
+        }
+
+        /* Выбор сложности */
+        .difficulty {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .difficulty-btn {
+            background: #1f3140;
+            border: 2px solid #2f5375;
+            color: #b7d4f0;
+            padding: 8px 20px;
+            border-radius: 40px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            box-shadow: 0 5px 0 #0b121a;
+            flex: 1 1 100px;
+        }
+
+        .difficulty-btn.active {
+            background: #34638a;
+            border-color: #8fc9ff;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #0b121a, 0 0 15px #3e9eff;
+        }
+
+        .difficulty-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #0b121a;
+        }
+
+        /* Поле */
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+            aspect-ratio: 1/1;
+            background: #0f1924;
+            padding: 12px;
+            border-radius: 40px;
+            border: 3px solid #284a6b;
+        }
+
+        .cell {
+            background: #0b1825;
+            border-radius: 28px;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            box-shadow: inset 0 0 20px #000;
-        }
-
-        .evidence-icon {
-            font-size: 2rem;
-            filter: drop-shadow(0 0 5px #b89a7a);
-        }
-
-        .reset-btn {
-            background: #2a241e;
-            border: 2px solid #5e4f3e;
-            color: #d0b8a0;
-            padding: 12px 30px;
-            font-size: 1.2rem;
-            border-radius: 40px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-top: 15px;
-            font-family: 'Courier New', monospace;
-            width: 100%;
-            box-shadow: 0 7px 0 #0f0f0f;
-        }
-
-        .reset-btn:active {
-            transform: translateY(5px);
-            box-shadow: 0 2px 0 #0f0f0f;
-        }
-
-        .hidden-message {
-            font-size: 1.6rem;
+            font-size: 5rem;
             font-weight: bold;
-            color: #e0c8a8;
-            text-shadow: 0 0 15px #b87e4f;
-            margin: 15px 0 0;
-            min-height: 60px;
-            animation: flicker 2s infinite;
+            color: #e0f0ff;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: 0 8px 0 #03070c, 0 0 0 2px #1f405c;
+            aspect-ratio: 1/1;
+            text-shadow: 0 0 20px currentColor;
+            transform: scale(1);
         }
 
-        @keyframes flicker {
+        .cell:active:not(.taken) {
+            transform: translateY(5px);
+            box-shadow: 0 3px 0 #03070c, 0 0 0 2px #1f405c;
+        }
+
+        .cell.taken {
+            cursor: not-allowed;
+            filter: brightness(0.9);
+            box-shadow: 0 5px 0 #03070c, 0 0 0 2px #1f405c;
+            transform: translateY(3px);
+        }
+
+        .cell.win {
+            background: #2e6b4e;
+            color: #fff8b0;
+            box-shadow: 0 0 30px #6bd4a0;
+            animation: glow 1s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 20px #6bd4a0; }
+            to { box-shadow: 0 0 40px #a0ffc0; }
+        }
+
+        .cell.hint {
+            border: 4px solid #ffd966;
+            box-shadow: 0 0 25px #f1c40f;
+            transform: scale(1.02);
+        }
+
+        /* Панель управления */
+        .action-panel {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 15px 0 10px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: #1e3347;
+            border: none;
+            color: #d6ecff;
+            padding: 14px 24px;
+            font-size: 1.3rem;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.1s ease;
+            box-shadow: 0 7px 0 #0b1723, 0 0 0 2px #325c82;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1 1 150px;
+            justify-content: center;
+        }
+
+        .action-btn:active {
+            transform: translateY(5px);
+            box-shadow: 0 2px 0 #0b1723, 0 0 0 2px #325c82;
+        }
+
+        .action-btn:disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .reset-stats-btn {
+            background: #3a2b30;
+            box-shadow: 0 7px 0 #201a1e, 0 0 0 2px #a15c6b;
+            margin-top: 10px;
+        }
+
+        .status {
+            font-size: 2rem;
+            margin: 10px 0 5px;
+            min-height: 70px;
+            font-weight: 600;
+            color: #c4defa;
+            text-shadow: 0 2px 0 #0b1c2b;
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
             0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
+            50% { opacity: 0.7; }
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .footsteps {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            color: #5e4f3e;
-            font-size: 1.2rem;
-            z-index: 5;
-            opacity: 0.3;
-        }
-
-        /* Адаптация */
-        @media (max-width: 480px) {
-            h1 { font-size: 1.8rem; letter-spacing: 3px; }
-            .suspect-icon { font-size: 3rem; }
+        .footer {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #4f6d8f;
         }
     </style>
 </head>
 <body>
-    <!-- Эффекты старого кино -->
-    <div class="film-grain"></div>
-    <div class="scratch"></div>
+    <!-- Аудио (загружаются при первом взаимодействии) -->
+    <audio id="clickSound" preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_0b0b0b0b0b.mp3?filename=click-124468.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="winSound" preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_1c1c1c1c1c.mp3?filename=success-1-6297.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="loseSound" preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_2d2d2d2d2d.mp3?filename=error-126627.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="drawSound" preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_3e3e3e3e3e.mp3?filename=cartoon-tap-6086.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="hintSound" preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2021/08/12/audio_4f4f4f4f4f.mp3?filename=interface-124464.mp3" type="audio/mpeg">
+    </audio>
 
-    <!-- Звуки (загружаются при первом клике) -->
-    <audio id="bgMusic" loop preload="auto">
-        <source src="https://assets.mixkit.co/music/download/mixkit-film-noir-218.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="stepSound" preload="auto">
-        <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_8b6c5b5b5b.mp3?filename=footsteps-on-wood-6884.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="doorSound" preload="auto">
-        <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_5f3b1a5a5a.mp3?filename=creaking-door-1-6014.mp3" type="audio/mpeg">
-    </audio>
-    <audio id="revealSound" preload="auto">
-        <source src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_4f3b2a1b1b.mp3?filename=dramatic-reveal-140124.mp3" type="audio/mpeg">
-    </audio>
+    <div class="game-container">
+        <h1>✖️ DEEP ⚡ ◯</h1>
+        <div class="sub">против ИИ • подсказки • уровни</div>
 
-    <div class="card">
-        <h1>НОАР</h1>
-        <div class="subtitle">▸ КТО УКРАЛ НАСТРОЙ? ◂</div>
-
-        <!-- Описание дела -->
-        <div class="case-file" id="caseFile">
-            <p><span class="highlight">ДЕЛО №69</span> · 19:47</p>
-            <p>Ты зашёл сюда спокойным.</p>
-            <p>Но что-то пошло не так...</p>
-            <p id="dynamicCase">Твой настрой исчез. Кто виноват?</p>
+        <!-- Статистика -->
+        <div class="stats">
+            <div class="stat-item">🧑 <span class="stat-value" id="playerWins">0</span></div>
+            <div class="stat-item">🤖 <span class="stat-value" id="robotWins">0</span></div>
+            <div class="stat-item">🤝 <span class="stat-value" id="draws">0</span></div>
         </div>
 
-        <!-- Подозреваемые -->
-        <div class="suspects-title">◈ ПОДОЗРЕВАЕМЫЕ ◈</div>
-        <div class="suspect-grid">
-            <div class="suspect" id="suspect1">
-                <div class="suspect-icon">🐈‍⬛</div>
-                <div class="suspect-name">КОТ</div>
-                <div class="suspect-role">· хитёр ·</div>
-            </div>
-            <div class="suspect" id="suspect2">
-                <div class="suspect-icon">👤</div>
-                <div class="suspect-name">СОСЕД</div>
-                <div class="suspect-role">· подозрителен ·</div>
-            </div>
-            <div class="suspect" id="suspect3">
-                <div class="suspect-icon">🫵</div>
-                <div class="suspect-name">ТЫ САМ</div>
-                <div class="suspect-role">· главный свидетель ·</div>
-            </div>
+        <!-- Уровни сложности -->
+        <div class="difficulty">
+            <div class="difficulty-btn active" data-level="easy">🍃 Легкий</div>
+            <div class="difficulty-btn" data-level="medium">⚙️ Средний</div>
+            <div class="difficulty-btn" data-level="hard">💀 Сложный</div>
         </div>
 
-        <!-- Улики и сообщения -->
-        <div class="evidence-box" id="evidence">
-            <span class="evidence-icon">🔍</span>
-            <span id="evidenceText">Выбери подозреваемого...</span>
+        <!-- Поле -->
+        <div class="board" id="board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
         </div>
 
-        <!-- Финальное сообщение -->
-        <div class="hidden-message" id="finalMessage"></div>
+        <!-- Статус -->
+        <div class="status" id="status">✖️ Твой ход</div>
 
-        <!-- Кнопка сброса -->
-        <button class="reset-btn" id="resetBtn">⟲ НОВОЕ ДЕЛО</button>
+        <!-- Кнопки действий -->
+        <div class="action-panel">
+            <button class="action-btn" id="hintBtn">💡 Подсказка</button>
+            <button class="action-btn" id="newGameBtn">🔄 Новая игра</button>
+        </div>
+        <button class="action-btn reset-stats-btn" id="resetStatsBtn">📊 Сброс статистики</button>
+
+        <div class="footer">ИИ использует минимакс на сложном</div>
     </div>
-
-    <!-- Звук шагов (фон) -->
-    <div class="footsteps">👣 👣 👣</div>
 
     <script>
         (function() {
-            // Элементы
-            const suspect1 = document.getElementById('suspect1');
-            const suspect2 = document.getElementById('suspect2');
-            const suspect3 = document.getElementById('suspect3');
-            const evidenceText = document.getElementById('evidenceText');
-            const finalMessage = document.getElementById('finalMessage');
-            const resetBtn = document.getElementById('resetBtn');
-            const dynamicCase = document.getElementById('dynamicCase');
-            const evidenceBox = document.getElementById('evidence');
+            // ---------- Элементы ----------
+            const boardEl = document.getElementById('board');
+            const cells = document.querySelectorAll('.cell');
+            const statusEl = document.getElementById('status');
+            const playerWinsEl = document.getElementById('playerWins');
+            const robotWinsEl = document.getElementById('robotWins');
+            const drawsEl = document.getElementById('draws');
+            const hintBtn = document.getElementById('hintBtn');
+            const newGameBtn = document.getElementById('newGameBtn');
+            const resetStatsBtn = document.getElementById('resetStatsBtn');
+            const diffBtns = document.querySelectorAll('.difficulty-btn');
 
-            // Аудио
-            const bgMusic = document.getElementById('bgMusic');
-            const stepSound = document.getElementById('stepSound');
-            const doorSound = document.getElementById('doorSound');
-            const revealSound = document.getElementById('revealSound');
+            // ---------- Звуки ----------
+            const clickSound = document.getElementById('clickSound');
+            const winSound = document.getElementById('winSound');
+            const loseSound = document.getElementById('loseSound');
+            const drawSound = document.getElementById('drawSound');
+            const hintSound = document.getElementById('hintSound');
 
-            // Переменные
-            let step = 0;
-            let musicStarted = false;
-            let gameFinished = false;
+            // ---------- Состояние ----------
+            let board = ['', '', '', '', '', '', '', '', ''];
+            let currentPlayer = 'player'; // 'player' или 'robot'
+            let gameActive = true;
+            let wins = { player: 0, robot: 0, draws: 0 };
+            let difficulty = 'easy'; // по умолчанию легкий
+            let hintActive = false;
+            let hintIndex = -1;
 
-            // Функция для игры звуков
+            // Победные комбинации
+            const winPatterns = [
+                [0,1,2],[3,4,5],[6,7,8], // строки
+                [0,3,6],[1,4,7],[2,5,8], // столбцы
+                [0,4,8],[2,4,6]           // диагонали
+            ];
+
+            // ---------- Функции для звуков ----------
             function playSound(sound) {
                 if (sound) {
                     sound.currentTime = 0;
-                    sound.play().catch(e => console.log('sound error', e));
+                    sound.play().catch(e => {});
                 }
             }
 
-            // Запуск фоновой музыки при первом взаимодействии
-            function startMusic() {
-                if (!musicStarted) {
-                    bgMusic.volume = 0.3;
-                    bgMusic.play().catch(e => console.log('music start delayed'));
-                    musicStarted = true;
+            // ---------- Проверка победителя ----------
+            function checkWinner() {
+                for (let pattern of winPatterns) {
+                    const [a,b,c] = pattern;
+                    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+                        return board[a]; // 'X' или 'O'
+                    }
+                }
+                if (board.every(cell => cell !== '')) return 'draw';
+                return null;
+            }
+
+            // ---------- Подсветка победителя ----------
+            function highlightWinners(symbol) {
+                cells.forEach(cell => cell.classList.remove('win'));
+                for (let pattern of winPatterns) {
+                    const [a,b,c] = pattern;
+                    if (board[a] === symbol && board[b] === symbol && board[c] === symbol) {
+                        cells[a].classList.add('win');
+                        cells[b].classList.add('win');
+                        cells[c].classList.add('win');
+                    }
                 }
             }
 
-            // Улики и диалоги
-            const clues = {
-                cat: [
-                    { text: "Кот сидел на подоконнике. Весь день.", icon: "🐈" },
-                    { text: "На полу — следы лап. Ведут к холодильнику.", icon: "🐾" },
-                    { text: "Кот мурлычет. Слишком спокоен.", icon: "🎭" }
-                ],
-                neighbor: [
-                    { text: "Сосед вчера стучал в стену. В 3 ночи.", icon: "👂" },
-                    { text: "Из-за двери пахнет шаурмой.", icon: "🌯" },
-                    { text: "У него новый телевизор. Откуда деньги?", icon: "💰" }
-                ],
-                yourself: [
-                    { text: "Ты не спал всю ночь. Вспомни.", icon: "😵" },
-                    { text: "В кармане — записка. Твоим почерком.", icon: "📜" },
-                    { text: "Последнее фото в телефоне — ты улыбаешься. Но чему?", icon: "📸" }
-                ]
-            };
+            // ---------- Обновление статуса ----------
+            function updateStatus(text) {
+                statusEl.innerText = text;
+            }
 
-            // Финальные разоблачения
-            const endings = {
-                cat: "ЭТО БЫЛ КОТ! Он украл твой настрой, чтобы получить больше рыбы. Хитрец...",
-                neighbor: "СОСЕД! Он завидовал твоему спокойствию. Теперь ты знаешь правду.",
-                yourself: "ТЫ САМ! Твой настрой никто не крал. Ты просто устал. Отдохни, детектив."
-            };
+            // ---------- Обновление статистики на экране ----------
+            function updateStatsUI() {
+                playerWinsEl.innerText = wins.player;
+                robotWinsEl.innerText = wins.robot;
+                drawsEl.innerText = wins.draws;
+            }
 
-            // Счётчик шагов для каждого подозреваемого
-            let catStep = 0;
-            let neighborStep = 0;
-            let yourselfStep = 0;
-
-            // Обработчики кликов
-            suspect1.addEventListener('click', () => {
-                if (gameFinished) return;
-                startMusic();
-                playSound(stepSound);
-                
-                if (catStep < clues.cat.length) {
-                    evidenceText.innerText = clues.cat[catStep].text;
-                    evidenceBox.innerHTML = `<span class="evidence-icon">${clues.cat[catStep].icon}</span><span id="evidenceText">${clues.cat[catStep].text}</span>`;
-                    catStep++;
-                } else {
-                    // Разоблачение
-                    gameFinished = true;
-                    playSound(revealSound);
-                    finalMessage.innerText = endings.cat;
-                    evidenceBox.innerHTML = `<span class="evidence-icon">🐈‍⬛</span><span id="evidenceText">Кот пойман с поличным!</span>`;
-                    dynamicCase.innerText = "Дело раскрыто. Виновный найден.";
+            // ---------- Конец игры ----------
+            function endGame(winner) {
+                gameActive = false;
+                hintBtn.disabled = true;
+                if (winner === 'X') {
+                    wins.player++;
+                    highlightWinners('X');
+                    updateStatus('✖️ Ты выиграл!');
+                    playSound(winSound);
+                } else if (winner === 'O') {
+                    wins.robot++;
+                    highlightWinners('O');
+                    updateStatus('🤖 Робот победил');
+                    playSound(loseSound);
+                } else if (winner === 'draw') {
+                    wins.draws++;
+                    updateStatus('🤝 Ничья');
+                    playSound(drawSound);
                 }
-            });
+                updateStatsUI();
+            }
 
-            suspect2.addEventListener('click', () => {
-                if (gameFinished) return;
-                startMusic();
-                playSound(doorSound);
-                
-                if (neighborStep < clues.neighbor.length) {
-                    evidenceText.innerText = clues.neighbor[neighborStep].text;
-                    evidenceBox.innerHTML = `<span class="evidence-icon">${clues.neighbor[neighborStep].icon}</span><span id="evidenceText">${clues.neighbor[neighborStep].text}</span>`;
-                    neighborStep++;
-                } else {
-                    gameFinished = true;
-                    playSound(revealSound);
-                    finalMessage.innerText = endings.neighbor;
-                    evidenceBox.innerHTML = `<span class="evidence-icon">👤</span><span id="evidenceText">Сосед сознался!</span>`;
-                    dynamicCase.innerText = "Дело раскрыто. Виновный найден.";
+            // ---------- Оценка позиции для минимакса (сложный уровень) ----------
+            function evaluate(board) {
+                for (let pattern of winPatterns) {
+                    const [a,b,c] = pattern;
+                    if (board[a] === 'O' && board[b] === 'O' && board[c] === 'O') return 10;
+                    if (board[a] === 'X' && board[b] === 'X' && board[c] === 'X') return -10;
                 }
-            });
+                return 0;
+            }
 
-            suspect3.addEventListener('click', () => {
-                if (gameFinished) return;
-                startMusic();
-                playSound(stepSound);
-                
-                if (yourselfStep < clues.yourself.length) {
-                    evidenceText.innerText = clues.yourself[yourselfStep].text;
-                    evidenceBox.innerHTML = `<span class="evidence-icon">${clues.yourself[yourselfStep].icon}</span><span id="evidenceText">${clues.yourself[yourselfStep].text}</span>`;
-                    yourselfStep++;
+            // Минимакс (сложный уровень)
+            function minimax(board, depth, isMax) {
+                let score = evaluate(board);
+                if (score === 10 || score === -10) return score;
+                if (!board.includes('')) return 0;
+
+                if (isMax) {
+                    let best = -Infinity;
+                    for (let i = 0; i < 9; i++) {
+                        if (board[i] === '') {
+                            board[i] = 'O';
+                            best = Math.max(best, minimax(board, depth+1, false));
+                            board[i] = '';
+                        }
+                    }
+                    return best;
                 } else {
-                    gameFinished = true;
-                    playSound(revealSound);
-                    finalMessage.innerText = endings.yourself;
-                    evidenceBox.innerHTML = `<span class="evidence-icon">🫵</span><span id="evidenceText">Ты — виновник и жертва одновременно.</span>`;
-                    dynamicCase.innerText = "Дело раскрыто. Виновный найден.";
+                    let best = Infinity;
+                    for (let i = 0; i < 9; i++) {
+                        if (board[i] === '') {
+                            board[i] = 'X';
+                            best = Math.min(best, minimax(board, depth+1, true));
+                            board[i] = '';
+                        }
+                    }
+                    return best;
                 }
+            }
+
+            // Получение лучшего хода для сложного уровня
+            function getBestMove(board) {
+                let bestVal = -Infinity;
+                let bestMove = -1;
+                for (let i = 0; i < 9; i++) {
+                    if (board[i] === '') {
+                        board[i] = 'O';
+                        let moveVal = minimax(board, 0, false);
+                        board[i] = '';
+                        if (moveVal > bestVal) {
+                            bestVal = moveVal;
+                            bestMove = i;
+                        }
+                    }
+                }
+                return bestMove;
+            }
+
+            // ---------- Ход робота (в зависимости от сложности) ----------
+            function robotMove() {
+                if (!gameActive || currentPlayer !== 'robot') return;
+
+                let moveIndex = -1;
+
+                if (difficulty === 'easy') {
+                    // Лёгкий: случайный ход
+                    const available = board.reduce((acc, cell, idx) => cell === '' ? [...acc, idx] : acc, []);
+                    if (available.length > 0) {
+                        moveIndex = available[Math.floor(Math.random() * available.length)];
+                    }
+                } else if (difficulty === 'medium') {
+                    // Средний: комбинация защиты и атаки (как старый робот)
+                    // Сначала попытаться выиграть
+                    for (let pattern of winPatterns) {
+                        const [a,b,c] = pattern;
+                        if (board[a] === 'O' && board[b] === 'O' && board[c] === '') moveIndex = c;
+                        else if (board[a] === 'O' && board[c] === 'O' && board[b] === '') moveIndex = b;
+                        else if (board[b] === 'O' && board[c] === 'O' && board[a] === '') moveIndex = a;
+                    }
+                    if (moveIndex === -1) {
+                        // Заблокировать игрока
+                        for (let pattern of winPatterns) {
+                            const [a,b,c] = pattern;
+                            if (board[a] === 'X' && board[b] === 'X' && board[c] === '') moveIndex = c;
+                            else if (board[a] === 'X' && board[c] === 'X' && board[b] === '') moveIndex = b;
+                            else if (board[b] === 'X' && board[c] === 'X' && board[a] === '') moveIndex = a;
+                        }
+                    }
+                    if (moveIndex === -1 && board[4] === '') moveIndex = 4; // центр
+                    if (moveIndex === -1) {
+                        const corners = [0,2,6,8];
+                        const availableCorners = corners.filter(i => board[i] === '');
+                        if (availableCorners.length > 0) {
+                            moveIndex = availableCorners[Math.floor(Math.random() * availableCorners.length)];
+                        }
+                    }
+                    if (moveIndex === -1) {
+                        const available = board.reduce((acc, cell, idx) => cell === '' ? [...acc, idx] : acc, []);
+                        if (available.length > 0) {
+                            moveIndex = available[Math.floor(Math.random() * available.length)];
+                        }
+                    }
+                } else {
+                    // Сложный: минимакс
+                    moveIndex = getBestMove([...board]);
+                }
+
+                if (moveIndex === -1 || board[moveIndex] !== '') return;
+
+                // Выполнить ход робота с задержкой
+                setTimeout(() => {
+                    if (!gameActive || currentPlayer !== 'robot') return;
+
+                    board[moveIndex] = 'O';
+                    cells[moveIndex].innerText = 'O';
+                    cells[moveIndex].classList.add('taken');
+                    playSound(clickSound);
+
+                    const winner = checkWinner();
+                    if (winner) {
+                        endGame(winner);
+                    } else {
+                        currentPlayer = 'player';
+                        updateStatus('✖️ Твой ход');
+                        hintBtn.disabled = false;
+                        hintActive = false;
+                        removeHint();
+                    }
+                }, 300);
+            }
+
+            // ---------- Убрать подсветку подсказки ----------
+            function removeHint() {
+                cells.forEach(c => c.classList.remove('hint'));
+                hintActive = false;
+                hintIndex = -1;
+            }
+
+            // ---------- Показать подсказку ----------
+            function showHint() {
+                if (!gameActive || currentPlayer !== 'player') {
+                    playSound(hintSound); // просто звук, но подсказка не активна
+                    return;
+                }
+
+                // Используем ИИ для лучшего хода (на основе текущей сложности, но для игрока)
+                // Просто скопируем логику робота, но для X (игрока)
+                let bestMove = -1;
+                if (difficulty === 'easy') {
+                    // Для лёгкого: случайный пустой
+                    const available = board.reduce((acc, cell, idx) => cell === '' ? [...acc, idx] : acc, []);
+                    if (available.length > 0) {
+                        bestMove = available[Math.floor(Math.random() * available.length)];
+                    }
+                } else if (difficulty === 'medium') {
+                    // Для среднего: постараться выбрать непроигрышный
+                    // Сначала проверим, может ли игрок выиграть следующим ходом?
+                    for (let pattern of winPatterns) {
+                        const [a,b,c] = pattern;
+                        if (board[a] === 'X' && board[b] === 'X' && board[c] === '') bestMove = c;
+                        else if (board[a] === 'X' && board[c] === 'X' && board[b] === '') bestMove = b;
+                        else if (board[b] === 'X' && board[c] === 'X' && board[a] === '') bestMove = a;
+                    }
+                    if (bestMove === -1) {
+                        // Заблокировать возможную победу робота
+                        for (let pattern of winPatterns) {
+                            const [a,b,c] = pattern;
+                            if (board[a] === 'O' && board[b] === 'O' && board[c] === '') bestMove = c;
+                            else if (board[a] === 'O' && board[c] === 'O' && board[b] === '') bestMove = b;
+                            else if (board[b] === 'O' && board[c] === 'O' && board[a] === '') bestMove = a;
+                        }
+                    }
+                    if (bestMove === -1 && board[4] === '') bestMove = 4;
+                    if (bestMove === -1) {
+                        const corners = [0,2,6,8];
+                        const availableCorners = corners.filter(i => board[i] === '');
+                        if (availableCorners.length > 0) {
+                            bestMove = availableCorners[Math.floor(Math.random() * availableCorners.length)];
+                        }
+                    }
+                    if (bestMove === -1) {
+                        const available = board.reduce((acc, cell, idx) => cell === '' ? [...acc, idx] : acc, []);
+                        if (available.length > 0) {
+                            bestMove = available[Math.floor(Math.random() * available.length)];
+                        }
+                    }
+                } else {
+                    // Сложный: используем минимакс, но с точки зрения игрока (X) — для минимакса нужно инвертировать
+                    // Можно адаптировать, но проще: минимакс для робота, но с доски где робот - O, а нам нужен лучший для X
+                    // Для подсказки просто используем тот же минимакс, но считаем что робот ходит O, а игрок X
+                    // Найдём ход, который минимизирует шансы робота (то есть лучший для X)
+                    let bestVal = Infinity;
+                    for (let i = 0; i < 9; i++) {
+                        if (board[i] === '') {
+                            board[i] = 'X';
+                            let moveVal = minimax(board, 0, true); // тут true, потому что следующий ход робота (O) максимизирует
+                            board[i] = '';
+                            if (moveVal < bestVal) {
+                                bestVal = moveVal;
+                                bestMove = i;
+                            }
+                        }
+                    }
+                }
+
+                if (bestMove !== -1 && board[bestMove] === '') {
+                    removeHint();
+                    cells[bestMove].classList.add('hint');
+                    hintActive = true;
+                    hintIndex = bestMove;
+                    playSound(hintSound);
+                } else {
+                    // Нет доступных подсказок (обычно не бывает)
+                }
+            }
+
+            // ---------- Обработка клика по клетке ----------
+            function handleCellClick(e) {
+                const cell = e.target;
+                const index = cell.dataset.index;
+
+                if (!gameActive || currentPlayer !== 'player' || board[index] !== '') return;
+
+                // Убираем подсказку
+                removeHint();
+
+                // Ход игрока
+                board[index] = 'X';
+                cell.innerText = 'X';
+                cell.classList.add('taken');
+                playSound(clickSound);
+
+                const winner = checkWinner();
+                if (winner) {
+                    endGame(winner);
+                    hintBtn.disabled = true;
+                } else {
+                    currentPlayer = 'robot';
+                    updateStatus('🤖 Думает...');
+                    hintBtn.disabled = true;
+                    robotMove();
+                }
+            }
+
+            // ---------- Новая игра ----------
+            function newGame() {
+                board = ['', '', '', '', '', '', '', '', ''];
+                currentPlayer = 'player';
+                gameActive = true;
+
+                cells.forEach(cell => {
+                    cell.innerText = '';
+                    cell.classList.remove('taken', 'win', 'hint');
+                });
+
+                updateStatus('✖️ Твой ход');
+                hintBtn.disabled = false;
+                hintActive = false;
+            }
+
+            // ---------- Сброс статистики ----------
+            function resetStats() {
+                wins = { player: 0, robot: 0, draws: 0 };
+                updateStatsUI();
+                newGame();
+            }
+
+            // ---------- Переключение сложности ----------
+            function setDifficulty(level) {
+                difficulty = level;
+                diffBtns.forEach(btn => {
+                    if (btn.dataset.level === level) btn.classList.add('active');
+                    else btn.classList.remove('active');
+                });
+                newGame(); // начинаем новую игру при смене сложности
+            }
+
+            // ---------- Назначение обработчиков ----------
+            cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+
+            hintBtn.addEventListener('click', () => {
+                if (!gameActive || currentPlayer !== 'player') {
+                    playSound(hintSound); // просто звук ошибки
+                    return;
+                }
+                showHint();
             });
 
-            // Сброс игры
-            resetBtn.addEventListener('click', () => {
-                gameFinished = false;
-                catStep = 0;
-                neighborStep = 0;
-                yourselfStep = 0;
-                
-                evidenceBox.innerHTML = `<span class="evidence-icon">🔍</span><span id="evidenceText">Выбери подозреваемого...</span>`;
-                finalMessage.innerText = '';
-                dynamicCase.innerText = "Твой настрой исчез. Кто виноват?";
-                
-                playSound(doorSound);
+            newGameBtn.addEventListener('click', () => {
+                newGame();
+                playSound(clickSound);
             });
 
-            // Прелоад музыки при первом движении мыши (для автостарта)
+            resetStatsBtn.addEventListener('click', () => {
+                resetStats();
+                playSound(clickSound);
+            });
+
+            diffBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    setDifficulty(btn.dataset.level);
+                    playSound(clickSound);
+                });
+            });
+
+            // Инициализация
+            newGame();
+            updateStatsUI();
+
+            // Автостарт звуков при первом взаимодействии (для мобильных)
             document.body.addEventListener('touchstart', function once() {
-                startMusic();
+                // просто инициируем аудиоконтекст
                 document.body.removeEventListener('touchstart', once);
             });
-            document.body.addEventListener('mousemove', function once() {
-                startMusic();
-                document.body.removeEventListener('mousemove', once);
-            });
-
         })();
     </script>
 </body>
