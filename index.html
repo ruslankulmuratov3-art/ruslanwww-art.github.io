@@ -3,14 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Сен чортсың хе-хе 😈</title>
+    <title>Калайсын чорт</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             min-height: 100vh;
             background: linear-gradient(145deg, #1e2b3a, #2c3e50);
@@ -20,7 +15,6 @@
             justify-content: center;
             padding: 16px;
         }
-
         .card {
             max-width: 420px;
             width: 100%;
@@ -33,7 +27,6 @@
             text-align: center;
             color: white;
         }
-
         .media-container {
             width: 100%;
             aspect-ratio: 1/1;
@@ -44,14 +37,12 @@
             background: #34495e;
             box-shadow: 0 20px 30px rgba(0,0,0,0.6);
         }
-
         #mediaElement {
             width: 100%;
             height: 100%;
             object-fit: cover;
             display: block;
         }
-
         .question-text {
             font-size: 2rem;
             font-weight: bold;
@@ -60,14 +51,12 @@
             min-height: 80px;
             padding: 0 10px;
         }
-
         .button-panel {
             display: flex;
             gap: 20px;
             justify-content: center;
             margin: 20px 0;
         }
-
         .btn {
             flex: 1;
             padding: 18px 0;
@@ -79,22 +68,9 @@
             transition: all 0.1s ease;
             box-shadow: 0 7px 0 rgba(0,0,0,0.3);
         }
-
-        .btn:active {
-            transform: translateY(5px);
-            box-shadow: 0 2px 0 rgba(0,0,0,0.3);
-        }
-
-        .btn-yes {
-            background: #2ecc71;
-            color: white;
-        }
-
-        .btn-no {
-            background: #e74c3c;
-            color: white;
-        }
-
+        .btn:active { transform: translateY(5px); box-shadow: 0 2px 0 rgba(0,0,0,0.3); }
+        .btn-yes { background: #2ecc71; color: white; }
+        .btn-no { background: #e74c3c; color: white; }
         .hidden-message {
             margin-top: 20px;
             font-size: 1.8rem;
@@ -104,7 +80,6 @@
             animation: bounce 0.5s;
             min-height: 60px;
         }
-
         @keyframes bounce {
             0% { transform: scale(0); }
             50% { transform: scale(1.2); }
@@ -114,43 +89,36 @@
 </head>
 <body>
     <div class="card">
-        <!-- Контейнер для фото/видео -->
         <div class="media-container">
-            <img id="mediaElement" src="https://ruslankulmuradov3-art.github.io/photo_2026-02-26_18-42-23.jpg" alt="фото">
+            <!-- Фото с правильной ссылкой через длинный URL -->
+            <img id="mediaElement" src="https://ruslankulmuratov3-art.github.io/ruslankulmuradov3-art.github.io/photo_2026-02-26_18-42-23.jpg" alt="фото" onerror="this.src='https://via.placeholder.com/400?text=Фото'">
         </div>
 
-        <!-- ✍️ ЗДЕСЬ НАПИШИ СВОЙ ТЕКСТ -->
         <div class="question-text" id="question">
-            Сен чортсың  ба?
+            Сен чортсың ба?
         </div>
 
-        <!-- Кнопки -->
         <div class="button-panel">
             <button class="btn btn-yes" id="yesBtn">Иә</button>
             <button class="btn btn-no" id="noBtn">Жоқ</button>
         </div>
 
-        <!-- Сообщение после нажатия -->
         <div class="hidden-message" id="message"></div>
     </div>
 
     <script>
-        // Элементы
         const mediaContainer = document.querySelector('.media-container');
         const mediaElement = document.getElementById('mediaElement');
         const yesBtn = document.getElementById('yesBtn');
         const noBtn = document.getElementById('noBtn');
         const messageDiv = document.getElementById('message');
 
-        // Твоё видео
-        const videoURL = 'https://ruslankulmuradov3-art.github.io/11.mp4';
+        // Правильная ссылка на видео через длинный URL
+        const videoURL = 'https://ruslankulmuratov3-art.github.io/ruslankulmuradov3-art.github.io/11.mp4';
 
-        // Функция замены фото на видео
         function replaceWithVideo() {
-            // Если уже видео — не заменяем
             if (mediaElement.tagName === 'VIDEO') return;
 
-            // Создаём видео элемент
             const video = document.createElement('video');
             video.id = 'mediaElement';
             video.className = mediaElement.className;
@@ -164,20 +132,17 @@
             video.style.height = '100%';
             video.style.objectFit = 'cover';
 
-            // Заменяем img на video
             mediaContainer.innerHTML = '';
             mediaContainer.appendChild(video);
         }
 
-        // Нажатие на Жоқ
         noBtn.addEventListener('click', () => {
             replaceWithVideo();
-            messageDiv.innerText = 'Сен чортсың хе-хе 😈';
+            messageDiv.innerText = 'Сен чортсың хе-хе ';
         });
 
-        // Нажатие на Иә
         yesBtn.addEventListener('click', () => {
-            messageDiv.innerText = 'Сен чортсың хе-хе 😈';
+            messageDiv.innerText = 'Сен чортсың хе-хе ';
         });
     </script>
 </body>
