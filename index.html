@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Сен чортсың</title>
+    <title>Ораза и котики 🐱✨</title>
     <style>
         * {
             margin: 0;
@@ -13,172 +13,460 @@
 
         body {
             min-height: 100vh;
-            background: linear-gradient(145deg, #1e2b3a, #2c3e50);
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(145deg, #0b1a2e 0%, #1a3b5c 100%);
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 16px;
+            position: relative;
+            overflow-x: hidden;
         }
 
+        /* Полумесяц и звезды (фон) */
+        .moon {
+            position: fixed;
+            top: 20px;
+            right: 30px;
+            width: 80px;
+            height: 80px;
+            background: #f9f3d9;
+            border-radius: 50%;
+            box-shadow: 0 0 30px #ffd966, 0 0 60px #f1c40f;
+            z-index: 0;
+        }
+        .moon::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 20px;
+            width: 70px;
+            height: 70px;
+            background: #0b1a2e;
+            border-radius: 50%;
+        }
+        .star {
+            position: fixed;
+            color: rgba(255,255,200,0.6);
+            font-size: 24px;
+            user-select: none;
+            pointer-events: none;
+            z-index: 0;
+            animation: twinkle 3s infinite alternate;
+        }
+        @keyframes twinkle {
+            0% { opacity: 0.2; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Основная карточка */
         .card {
+            position: relative;
+            z-index: 10;
             max-width: 420px;
             width: 100%;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 2px solid rgba(255, 215, 0, 0.3);
-            border-radius: 48px;
+            border-radius: 48px 48px 32px 32px;
             padding: 24px 20px 30px;
-            box-shadow: 0 30px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 30px 50px rgba(0,0,0,0.5), 0 0 0 2px #ffd966 inset;
             text-align: center;
             color: white;
         }
 
-        .media-container {
-            width: 100%;
-            aspect-ratio: 1/1;
-            border-radius: 40px;
-            overflow: hidden;
-            border: 4px solid gold;
-            margin-bottom: 20px;
-            background: #34495e;
-            box-shadow: 0 20px 30px rgba(0,0,0,0.6);
-        }
-
-        #mediaElement {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .question-text {
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 30px;
+        /* Заголовок */
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
             text-shadow: 0 4px 10px #ffb347;
-            min-height: 80px;
-            padding: 0 10px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        h1 span {
+            background: #ffd966;
+            color: #1e3c72;
+            padding: 6px 18px;
+            border-radius: 60px;
+            font-size: 1.4rem;
+            box-shadow: 0 6px 0 #b06d1e;
+            transform: rotate(-2deg);
         }
 
+        /* Котик-картинка */
+        .cat-container {
+            margin: 20px 0 10px;
+            position: relative;
+            min-height: 200px;
+            display: flex;
+            justify-content: center;
+        }
+        .cat-img {
+            max-width: 100%;
+            width: 280px;
+            height: auto;
+            border-radius: 40px;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.6), 0 0 0 4px #ffb347;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            object-fit: cover;
+            aspect-ratio: 1/1;
+            background: #ffe0a3;
+        }
+        .cat-img:hover {
+            transform: scale(1.02) rotate(1deg);
+        }
+
+        /* Кнопки-кошачьи шалости */
         .button-panel {
             display: flex;
-            gap: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
             justify-content: center;
-            margin: 20px 0;
+            margin: 20px 0 10px;
         }
-
         .btn {
-            flex: 1;
-            padding: 18px 0;
-            font-size: 2rem;
-            font-weight: bold;
+            background: #f9e6b6;
             border: none;
             border-radius: 60px;
-            cursor: pointer;
-            transition: all 0.1s ease;
-            box-shadow: 0 7px 0 rgba(0,0,0,0.3);
-        }
-
-        .btn:active {
-            transform: translateY(5px);
-            box-shadow: 0 2px 0 rgba(0,0,0,0.3);
-        }
-
-        .btn-yes {
-            background: #2ecc71;
-            color: white;
-        }
-
-        .btn-no {
-            background: #e74c3c;
-            color: white;
-        }
-
-        .hidden-message {
-            margin-top: 20px;
-            font-size: 1.8rem;
+            padding: 14px 24px;
+            font-size: 1.2rem;
             font-weight: bold;
-            color: #f1c40f;
-            text-shadow: 2px 2px 0 #c0392b;
-            animation: bounce 0.5s;
-            min-height: 60px;
+            color: #1f4a6b;
+            box-shadow: 0 7px 0 #b2702e, 0 10px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: all 0.07s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1 1 auto;
+            min-width: 140px;
+            justify-content: center;
+            border: 2px solid #f1c40f;
+        }
+        .btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 #b2702e, 0 5px 10px rgba(0,0,0,0.3);
+        }
+        .btn i {
+            font-size: 1.5rem;
         }
 
-        @keyframes bounce {
+        /* Область сюрприза */
+        .surprise-box {
+            margin-top: 25px;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 60px;
+            border: 2px dashed #ffb347;
+            transition: all 0.3s;
+        }
+        .surprise-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff2c7;
+            text-shadow: 2px 2px 0 #b45f1b;
+            min-height: 3rem;
+            animation: pop 0.4s;
+        }
+        @keyframes pop {
             0% { transform: scale(0); }
-            50% { transform: scale(1.2); }
+            80% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
+
+        /* Падающие рыбки и звёздочки (анимация) */
+        .floating-item {
+            position: fixed;
+            pointer-events: none;
+            font-size: 2rem;
+            z-index: 999;
+            animation: floatUp 3s ease-out forwards;
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0); opacity: 1; }
+            100% { transform: translateY(-200px) rotate(20deg); opacity: 0; }
+        }
+
+        /* Счётчик мурчаний */
+        .purr-counter {
+            background: #0f2b44;
+            border-radius: 50px;
+            padding: 10px 20px;
+            margin: 15px 0 0;
+            display: inline-block;
+            border: 2px solid gold;
+            font-size: 1.3rem;
+        }
+
+        /* Кнопка музыки */
+        .music-btn {
+            background: transparent;
+            border: 2px solid gold;
+            border-radius: 60px;
+            color: white;
+            font-size: 2rem;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        .music-btn:hover {
+            background: rgba(255,215,0,0.3);
+        }
+
+        /* Адаптация */
+        @media (max-width: 480px) {
+            h1 { font-size: 1.8rem; }
+            .btn { min-width: 120px; padding: 12px 16px; font-size: 1rem; }
+            .cat-img { width: 220px; }
+        }
     </style>
+    <!-- Подключаем Font Awesome для иконок (работает без установки) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+    <!-- Декоративные звёздочки -->
+    <div class="moon"></div>
+    <div class="star" style="top: 15%; left: 10%;">✨</div>
+    <div class="star" style="top: 70%; left: 85%;">⭐</div>
+    <div class="star" style="top: 20%; left: 90%;">🌙</div>
+
+    <!-- Элемент аудио (скрытый) -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_1b4c3e4e5f.mp3?filename=oriental-music-11201.mp3" type="audio/mpeg">
+        <!-- Резервный трек, если первый недоступен -->
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+    </audio>
+
     <div class="card">
-        <!-- Контейнер для фото/видео -->
-        <div class="media-container">
-            <img id="mediaElement" src="https://ruslankulmuradov3-art.github.io/photo_2026-02-26_18-42-23.jpg" alt="фото">
+        <h1>
+            🐱 Ораза
+            <span>Мур-аза</span>
+            🐱
+        </h1>
+        <p style="font-size: 1.2rem; margin-bottom: 5px;">Қабыл болсын, пушистый друг!</p>
+
+        <!-- Котик меняется по кнопкам -->
+        <div class="cat-container">
+            <img class="cat-img" id="catImage" src="https://cataas.com/cat?width=300&height=300&random=1" alt="Поздравительный кот">
         </div>
 
-        <!-- ✍️ ЗДЕСЬ НАПИШИ СВОЙ ТЕКСТ -->
-        <div class="question-text" id="question">
-           Сен чортсың ба?
-        </div>
-
-        <!-- Кнопки -->
+        <!-- Панель кнопок -->
         <div class="button-panel">
-            <button class="btn btn-yes" id="yesBtn">Иә</button>
-            <button class="btn btn-no" id="noBtn">Жоқ</button>
+            <button class="btn" id="petBtn"><i class="fas fa-paw"></i> Погладить</button>
+            <button class="btn" id="fishBtn"><i class="fas fa-fish"></i> Рыбка</button>
+            <button class="btn" id="magicBtn"><i class="fas fa-magic"></i> Сюрприз</button>
         </div>
 
-        <!-- Сообщение после нажатия -->
-        <div class="hidden-message" id="message"></div>
+        <!-- Дополнительные кнопки (второй ряд) -->
+        <div class="button-panel" style="margin-top: 0;">
+            <button class="btn" id="hatBtn"><i class="fas fa-crown"></i> Тюбетейка</button>
+            <button class="btn" id="danceBtn"><i class="fas fa-music"></i> Танец</button>
+        </div>
+
+        <!-- Счётчик мурчаний (при поглаживаниях) -->
+        <div class="purr-counter" id="purrCounter">
+            <i class="fas fa-heart" style="color: #ff6b6b;"></i> Мурчаний: <span id="purrCount">0</span>
+        </div>
+
+        <!-- Блок сюрприза -->
+        <div class="surprise-box" id="surpriseBox">
+            <div class="surprise-text" id="surpriseMessage">👆 Нажми на кнопку!</div>
+        </div>
+
+        <!-- Кнопка управления музыкой -->
+        <button class="music-btn" id="musicToggle">
+            <i class="fas fa-volume-off" id="musicIcon"></i> <span id="musicText">Включить музыку</span>
+        </button>
     </div>
 
     <script>
-        // Элементы
-        const mediaContainer = document.querySelector('.media-container');
-        const mediaElement = document.getElementById('mediaElement');
-        const yesBtn = document.getElementById('yesBtn');
-        const noBtn = document.getElementById('noBtn');
-        const messageDiv = document.getElementById('message');
+        (function() {
+            // Кошачьи данные
+            const catImages = [
+                'https://cataas.com/cat?width=300&height=300&random=1',
+                'https://cataas.com/cat?width=300&height=300&random=2',
+                'https://cataas.com/cat?width=300&height=300&random=3',
+                'https://cataas.com/cat?width=300&height=300&random=4',
+                'https://cataas.com/cat?width=300&height=300&random=5'
+            ];
+            
+            // Фразы для сюрприза
+            const surprisePhrases = [
+                '🐈 "Мур-аза қабыл болсын!"',
+                '✨ Кот посылает луч добра',
+                '🎁 Ты получил +10 к умилению',
+                '🌟 Кот в тюбетейке машет лапкой',
+                '🐟 Рыбка исполняет желания',
+                '🌙 Кот мурлычет на арабском',
+                '💖 Мур-мур-мур...',
+                '😻 Ты особенный, мяу!'
+            ];
 
-        // Твоё видео
-        const videoURL = 'https://ruslankulmuradov3-art.github.io/11.mp4';
+            // Элементы
+            const catImg = document.getElementById('catImage');
+            const petBtn = document.getElementById('petBtn');
+            const fishBtn = document.getElementById('fishBtn');
+            const magicBtn = document.getElementById('magicBtn');
+            const hatBtn = document.getElementById('hatBtn');
+            const danceBtn = document.getElementById('danceBtn');
+            const surpriseMsg = document.getElementById('surpriseMessage');
+            const purrSpan = document.getElementById('purrCount');
+            
+            // Музыкальные элементы
+            const audio = document.getElementById('bgMusic');
+            const musicBtn = document.getElementById('musicToggle');
+            const musicIcon = document.getElementById('musicIcon');
+            const musicText = document.getElementById('musicText');
+            
+            let purrCount = 0;
+            let currentCatIndex = 0;
+            let isMusicPlaying = false;
 
-        // Функция замены фото на видео
-        function replaceWithVideo() {
-            // Если уже видео — не заменяем
-            if (mediaElement.tagName === 'VIDEO') return;
+            // Функция смены картинки кота (без перезагрузки)
+            function changeCat() {
+                currentCatIndex = (currentCatIndex + 1) % catImages.length;
+                catImg.src = catImages[currentCatIndex] + '&t=' + Date.now(); // кеш не ломаем
+            }
 
-            // Создаём видео элемент
-            const video = document.createElement('video');
-            video.id = 'mediaElement';
-            video.className = mediaElement.className;
-            video.src = videoURL;
-            video.autoplay = true;
-            video.loop = true;
-            video.muted = false;
-            video.playsInline = true;
-            video.controls = false;
-            video.style.width = '100%';
-            video.style.height = '100%';
-            video.style.objectFit = 'cover';
+            // Функция создания падающих объектов (рыбки/звезды)
+            function createFloatingEmoji(emoji) {
+                const div = document.createElement('div');
+                div.className = 'floating-item';
+                div.innerHTML = emoji;
+                div.style.left = Math.random() * 100 + '%';
+                div.style.top = '80%';
+                div.style.fontSize = (Math.random() * 30 + 25) + 'px';
+                div.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                document.body.appendChild(div);
+                setTimeout(() => div.remove(), 3000);
+            }
 
-            // Заменяем img на video
-            mediaContainer.innerHTML = '';
-            mediaContainer.appendChild(video);
-        }
+            // Обновление счётчика
+            function updatePurrCount() {
+                purrSpan.innerText = purrCount;
+            }
 
-        // Нажатие на Жоқ
-        noBtn.addEventListener('click', () => {
-            replaceWithVideo();
-            messageDiv.innerText = 'Сен чортсың хе-хе ';
-        });
+            // Показать сообщение в сюрприз-боксе
+            function showMessage(text, emoji = '😺') {
+                surpriseMsg.innerText = text + ' ' + emoji;
+                surpriseMsg.style.animation = 'none';
+                surpriseMsg.offsetHeight; // триггер рефлоу
+                surpriseMsg.style.animation = 'pop 0.4s';
+            }
 
-        // Нажатие на Иә
-        yesBtn.addEventListener('click', () => {
-            messageDiv.innerText = 'Сен чортсың хе-хе ';
-        });
+            // Управление музыкой
+            function toggleMusic() {
+                if (isMusicPlaying) {
+                    audio.pause();
+                    musicIcon.className = 'fas fa-volume-off';
+                    musicText.innerText = 'Включить музыку';
+                } else {
+                    // Попытка воспроизвести (на телефоне требует жеста пользователя)
+                    audio.play().then(() => {
+                        // успешно
+                    }).catch(e => {
+                        // Если браузер заблокировал, покажем сообщение (но кнопка уже нажата, обычно работает)
+                        console.log('Music play failed:', e);
+                        surpriseMsg.innerText = 'Нажми ещё раз 🎵';
+                    });
+                    musicIcon.className = 'fas fa-volume-up';
+                    musicText.innerText = 'Выключить музыку';
+                }
+                isMusicPlaying = !isMusicPlaying;
+            }
+
+            // --- Обработчики кнопок ---
+
+            // Погладить
+            petBtn.addEventListener('click', () => {
+                purrCount++;
+                updatePurrCount();
+                showMessage('Муррр, спасибо!', '🐱');
+                createFloatingEmoji('❤️');
+                changeCat(); // котик меняется от удовольствия
+            });
+
+            // Рыбка
+            fishBtn.addEventListener('click', () => {
+                showMessage('Мяу! Вкусняшка!', '🐟');
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(() => createFloatingEmoji('🐟'), i * 100);
+                }
+                changeCat();
+            });
+
+            // Сюрприз
+            magicBtn.addEventListener('click', () => {
+                const randomIdx = Math.floor(Math.random() * surprisePhrases.length);
+                showMessage(surprisePhrases[randomIdx], '🎊');
+                for (let i = 0; i < 8; i++) {
+                    setTimeout(() => createFloatingEmoji(['✨','⭐','🌙','🎉','🎈'][Math.floor(Math.random()*5)]), i*80);
+                }
+                changeCat();
+            });
+
+            // Тюбетейка (кот в тюбетейке — добавим эмодзи и особое сообщение)
+            hatBtn.addEventListener('click', () => {
+                showMessage('Кот в тюбетейке! Ораза мубарак!', '🧢🐈');
+                createFloatingEmoji('🧢');
+                createFloatingEmoji('🐈');
+                changeCat();
+            });
+
+            // Танец
+            danceBtn.addEventListener('click', () => {
+                showMessage('💃 Кот танцует! 🕺', '🐈‍⬛');
+                for (let i = 0; i < 6; i++) {
+                    setTimeout(() => createFloatingEmoji('💫'), i*120);
+                }
+                // Добавим эффект вращения коту
+                catImg.style.transition = 'transform 0.5s';
+                catImg.style.transform = 'rotate(360deg) scale(1.1)';
+                setTimeout(() => {
+                    catImg.style.transform = 'rotate(0deg) scale(1)';
+                }, 500);
+                setTimeout(() => changeCat(), 600);
+            });
+
+            // При клике на самого кота тоже меняем
+            catImg.addEventListener('click', () => {
+                purrCount++; // за клик по котику тоже засчитаем мурчание
+                updatePurrCount();
+                showMessage('Мяу! (тыкнул) 😸', '🐾');
+                changeCat();
+                createFloatingEmoji('🐾');
+            });
+
+            // Кнопка музыки
+            musicBtn.addEventListener('click', toggleMusic);
+
+            // Инициализация случайным котом
+            window.addEventListener('load', () => {
+                catImg.src = catImages[Math.floor(Math.random() * catImages.length)] + '&t=' + Date.now();
+                // Раскидаем ещё звёздочек в фоне (доп)
+                for (let i = 0; i < 5; i++) {
+                    let star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.animationDelay = Math.random() * 2 + 's';
+                    star.innerText = ['✨','⭐','🌟','🌙'][Math.floor(Math.random()*4)];
+                    document.body.appendChild(star);
+                }
+            });
+
+        })();
     </script>
 </body>
 </html>
